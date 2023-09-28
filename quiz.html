@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Period Question</title>
+    <style>
+        body{
+            background: url(quiz.jpg);
+            background-position:center;
+            background-size: cover;
+        height:1000px;
+        }
+        h1{
+            font-size: 80px;
+            text-align: center;
+            color:whitesmoke
+        }
+       p{color:white ;
+        font-size:50px}
+
+        
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Period Quiz</h1>
+        <div id="question-container">
+        <p id="question"> Question goes here</p>
+        </div>
+        <div id="options-container">
+            
+        </div>
+         <button id="next-button">Next</button> 
+         <div id="result-container" style="display: none;"> 
+             <h2>Your Result:</h2> 
+             <p id="result">Your result will appear here</p> 
+         </div> -->
+      
+
+    <script>
+        
+        const quizData = [
+            {
+                question: "How long is your average menstrual cycle?",
+                
+                answers: [
+                    { text: "28 days", value: "A" },
+                
+                    { text: "21 days", value: "B" },
+
+                    
+                    { text: "35 days", value: "C" },
+                    
+                ],
+            },
+            {
+                question: "How long is your ",
+                answers: [
+                    { text: "28 days", value: "A" },
+                    { text: "21 days", value: "B" },
+                    { text: "35 days", value: "C" },
+                ],
+            },
+            {
+                question: "What is the name of the tissue that lines the uterus and sheds during menstruation?",
+                answers: [
+                    { text: "Endometrium", value: "A" },
+                    { text: "Myometrium", value: "B" },
+                    { text: "Perimetrium", value: "C" },
+                ],
+            },
+            {
+                question: "Which hormone is responsible for triggering ovulation in the menstrual cycle?",
+                answers: [
+                    { text: "Progesterone", value: "A" },
+                    { text: "Estrogen", value: "B" },
+                    { text: "Luteinizing Hormone (LH)", value: "C" },
+                ],
+            },
+            // Add more questions and answers as needed
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        const quizContainer = document.getElementById("quiz-container");
+        const questionContainer = document.getElementById("question-container");
+        const optionsContainer = document.getElementById("options-container");
+        const resultContainer = document.getElementById("result-container");
+
+        function startQuiz() {
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = quizData[currentQuestion];
+            questionContainer.textContent = question.question;
+
+            optionsContainer.innerHTML = "";
+            question.answers.forEach((answer) => {
+                const button = document.createElement("button");
+                button.textContent = answer.text;
+                button.addEventListener("click", () => selectAnswer(answer.value));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(value) {
+            userAnswers.push(value);
+            currentQuestion++;
+
+            if (currentQuestion < quizData.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizContainer.style.display = "none";
+            resultContainer.style.display = "block";
+
+            // Calculate and display the result based on userAnswers array
+            const result = calculateResult(userAnswers);
+
+            const resultElement = document.getElementById("result");
+            resultElement.textContent = `Your result: ${result}`;
+        }
+
+        function calculateResult(answers) {
+            // You can implement your own logic to calculate the result based on user answers.
+            // This is just a basic example.
+            let correctAnswers = 0;
+
+            answers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    correctAnswers++;
+                }
+            });
+
+            const percentage = (correctAnswers / quizData.length) * 100;
+
+            if (percentage >= 70) {
+                return "You have a good understanding of menstruation!";
+            } else if (percentage >= 40) {
+                return "You have some knowledge about menstruation. Keep learning!";
+            } else {
+                return "You might want to learn more about menstruation.";
+            }
+        }
+
+        // Start the quiz when the page loads
+        startQuiz();
+    </script>
+</body>
+</html>

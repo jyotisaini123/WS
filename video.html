@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>virtual call page</title><style>
+        body{
+            background:url(virtual.jpg);
+            /* background-position:center; */
+            background-size:cover; 
+            /* top:20px;
+            position:relative; */
+            height: 1000px;
+        }
+        h1{
+            left: 500px;
+            position:relative;
+            font-size: 50px;
+        }
+    </style>
+</head>
+<body>
+    <a href="login.html">MAIN PAGE</a>
+
+    <h1>Welcome to the Virtual Call Page</h1>
+    
+    <div id="call-container">
+        <video id="local-video" autoplay muted></video>
+        <video id="remote-video" autoplay></video>
+    </div>
+
+    <button id="start-call">Start Call</button>
+    <button id="end-call" disabled>End Call</button>
+
+    <script>
+        const startCallButton = document.getElementById("start-call");
+        const endCallButton = document.getElementById("end-call");
+        const localVideo = document.getElementById("local-video");
+        const remoteVideo = document.getElementById("remote-video");
+
+        let localStream;
+        let peerConnection;
+
+        startCallButton.addEventListener("click", startCall);
+        endCallButton.addEventListener("click", endCall);
+
+        async function startCall() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localVideo.srcObject = localStream;
+
+                
+                peerConnection = new RTCPeerConnection();
+
+                
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+
+                
+
+                endCallButton.disabled = false;
+                startCallButton.disabled = true;
+
+            } catch (error) {
+                console.error("Error starting the call:", error);
+            }
+        }
+
+        function endCall() {
+            
+            if (peerConnection) {
+                peerConnection.close();
+            }
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localVideo.srcObject = null;
+            }
+
+            endCallButton.disabled = true;
+            startCallButton.disabled = false;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
